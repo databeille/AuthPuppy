@@ -32,7 +32,7 @@
   <!-- Authenticators -->
   <?php echo __("Select authentication")?>: <select id="authenticators" name="authenticator" onchange="selectAuthMethod(this)">
   <?php foreach ($sf_data->getRaw('authenticators') as $authenticator) : ?>
-    <option value="<?php echo get_class($authenticator); ?>" <?php if ($selected_authenticator == get_class($authenticator)) { echo "SELECTED"; } ?>><?php echo $authenticator->getName(); ?></option></h1>
+    <option value="<?php echo get_class($authenticator); ?>" <?php if ($selected_authenticator == get_class($authenticator)) { echo "SELECTED"; } ?>><?php echo $authenticator->getName(); ?></option>
   <?php endforeach ?>
   </select>
   <?php elseif (count($allauths) == 1): ?>
@@ -43,9 +43,9 @@
     <div id="authPlugin_<?php echo get_class($authenticator); ?>" style="display: none">
       <?php $first = false; ?>
       <h1><?php echo $authenticator->getName(); ?></h1>
-      <table>
+      <div>
         <?php echo $authenticator->render($this); ?>
-      </table>
+      </div>
     </div>
   <?php endforeach ?>
 

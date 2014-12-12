@@ -75,8 +75,8 @@ if ($site_name != '') {
          <div id="footer" class="span-24 last">
             <!-- Creative Commons License -->
             <a href="http://creativecommons.org/licenses/GPL/2.0/">
-            <img alt="CC-GNU GPL" border="0" src="http://creativecommons.org/images/public/cc-GPL-a.png" /></a><br />
-            Copyright &copy 2010-2011 The authPuppy Development Team<br />
+            <?php echo image_tag(url_for("/images/cc-GPL-a.png"), array('alt' => 'CC-GNU GPL', 'class' => 'cc-gpl')); ?></a><br />
+            Copyright &copy; 2010-2011 The authPuppy Development Team<br />
             This software is licensed under the <a href="http://creativecommons.org/licenses/GPL/2.0/">GNU GPL</a> version 2.0
             <!-- /Creative Commons License -->
          </div>
