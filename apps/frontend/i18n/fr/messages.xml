@@ -14,35 +14,35 @@
       </trans-unit>
       <trans-unit id="3">
         <source>GW ID</source>
-        <target>Gw Id</target>
+        <target>ID passerelle</target>
       </trans-unit>
       <trans-unit id="4">
         <source>WAN IP</source>
-        <target>IP Wan</target>
+        <target>IP WAN</target>
       </trans-unit>
       <trans-unit id="5">
         <source>WD Uptime</source>
-        <target>WD Uptime</target>
+        <target>Durée de fontionnement</target>
       </trans-unit>
       <trans-unit id="6">
         <source>Last HB</source>
-        <target>Dernier HB</target>
+        <target>Dernier contact</target>
       </trans-unit>
       <trans-unit id="7">
         <source>The requested node was not found on the server.</source>
         <target>Le noeud demandé n'est pas sur le serveur</target>
       </trans-unit>
       <trans-unit id="8">
-        <source>There are %1% active nodes in the network.</source>
-        <target>Il y a %1% points d'accès actifs sur le réseau.</target>
+        <source>There is/are %1% active nodes in the network.</source>
+        <target>Il y a %1% point(s) d'accès actif(s) sur le réseau.</target>
       </trans-unit>
       <trans-unit id="9">
-        <source>There are %1% active connections.</source>
-        <target>Il y a actuellement %1% usagers connectés.</target>
+        <source>There is/are %1% active connections.</source>
+        <target>Il y a actuellement %1% usager(s) connecté(s).</target>
       </trans-unit>
       <trans-unit id="10">
         <source>Active Connections</source>
-        <target>Connections actives</target>
+        <target>Connection(s) active(s)</target>
       </trans-unit>
       <trans-unit id="11">
         <source>Deployment status</source>
@@ -50,7 +50,7 @@
       </trans-unit>
       <trans-unit id="12">
         <source>Required.</source>
-        <target>Obligatoire</target>
+        <target>Obligatoire.</target>
       </trans-unit>
       <trans-unit id="13">
         <source>Invalid.</source>
@@ -62,15 +62,15 @@
       </trans-unit>
       <trans-unit id="15">
         <source>At most %max% values must be selected (%count% values selected).</source>
-        <target/>
+        <target>Au plus %max% valeurs doivent être sélectionnées (%count% sélectionnées)</target>
       </trans-unit>
       <trans-unit id="16">
         <source>CSRF attack detected.</source>
-        <target/>
+        <target>Attaque CSRF détectée.</target>
       </trans-unit>
       <trans-unit id="17">
         <source>gw_id</source>
-        <target>id gw</target>
+        <target>ID passerelle</target>
       </trans-unit>
       <trans-unit id="18">
         <source>nodes_list</source>
@@ -78,7 +78,7 @@
       </trans-unit>
       <trans-unit id="20">
         <source>Message: </source>
-        <target>Message:</target>
+        <target>Message : </target>
       </trans-unit>
       <trans-unit id="21">
         <source>Configure auth server</source>
@@ -94,11 +94,11 @@
       </trans-unit>
       <trans-unit id="24">
         <source>Administrative login</source>
-        <target>Login administrateur</target>
+        <target>Connexion administrateur</target>
       </trans-unit>
       <trans-unit id="25">
         <source>Need help?</source>
-        <target>Besoin d'aide?</target>
+        <target>Besoin d'aide ?</target>
       </trans-unit>
       <trans-unit id="26">
         <source>Permissions</source>
@@ -110,7 +110,7 @@
       </trans-unit>
       <trans-unit id="28">
         <source>The database has been installed and initialized, your options from here are</source>
-        <target>La base de données a été installée et initialisée.  Vos options sont maintenant:</target>
+        <target>La base de données a été installée et initialisée. Vos options sont maintenant:</target>
       </trans-unit>
       <trans-unit id="29">
         <source>Configure the server's default values</source>
@@ -158,7 +158,7 @@
       </trans-unit>
       <trans-unit id="40">
         <source>Url must be of the form 'http://site' or 'https://site'</source>
-        <target>Url doivent être de la form 'http://site' ou 'https://site'</target>
+        <target>Les URLs doivent être de la form 'http://site' ou 'https://site'</target>
       </trans-unit>
       <trans-unit id="41">
         <source>File is too large (maximum is %max_size% bytes).</source>
@@ -170,11 +170,11 @@
       </trans-unit>
       <trans-unit id="43">
         <source>The uploaded file was only partially uploaded.</source>
-        <target>Le fichier a été partiellement chargé</target>
+        <target>Le fichier a été partiellement envoyé.</target>
       </trans-unit>
       <trans-unit id="44">
         <source>Missing a temporary folder.</source>
-        <target>Il manque un répertoire temporaire</target>
+        <target>Il manque un répertoire temporaire.</target>
       </trans-unit>
       <trans-unit id="45">
         <source>Failed to write file to disk.</source>
@@ -190,7 +190,7 @@
       </trans-unit>
       <trans-unit id="48">
         <source>Main url</source>
-        <target>Url du site principal</target>
+        <target>URL principale</target>
       </trans-unit>
       <trans-unit id="49">
         <source>Support link</source>
@@ -206,7 +206,7 @@
       </trans-unit>
       <trans-unit id="52">
         <source>Email from</source>
-        <target>Courriels envoyés de</target>
+        <target>Courriel envoyé de</target>
       </trans-unit>
       <trans-unit id="53">
         <source>Name from</source>
@@ -222,7 +222,7 @@
       </trans-unit>
       <trans-unit id="56">
         <source>The url of the site of the organisation (not the authentication server url)</source>
-        <target>L'url du site de l'organisation (pas le serveur d'authentification)</target>
+        <target>URL du site de l'organisation (pas le serveur d'authentification)</target>
       </trans-unit>
       <trans-unit id="57">
         <source>Optional link to a support form and contact information or email address for support.  If present, the link will show in the side menu in a colored box.</source>
@@ -238,7 +238,7 @@
       </trans-unit>
       <trans-unit id="60">
         <source>The email that emails sent from the application appear to be from</source>
-        <target>L'adresse courriel utilisé dans le champ de: des courriels envoyés par cette application</target>
+        <target>L'adresse courriel utilisée pour l'envoi des courriels par cette application</target>
       </trans-unit>
       <trans-unit id="61">
         <source>The name that emails sent from the application appear to be from</source>
@@ -262,23 +262,23 @@
       </trans-unit>
       <trans-unit id="66">
         <source>Db type</source>
-        <target>Type BD</target>
+        <target>Type BDD</target>
       </trans-unit>
       <trans-unit id="67">
         <source>Db server</source>
-        <target>Serveur de BD</target>
+        <target>Serveur de BDD</target>
       </trans-unit>
       <trans-unit id="68">
         <source>Db name</source>
-        <target>Nom de la BD</target>
+        <target>Nom de la BDD</target>
       </trans-unit>
       <trans-unit id="69">
         <source>Db username</source>
-        <target>Nom d'usager BD</target>
+        <target>Nom d'usager BDD</target>
       </trans-unit>
       <trans-unit id="70">
         <source>Db password</source>
-        <target>Mot de passe BD</target>
+        <target>Mot de passe BDD</target>
       </trans-unit>
       <trans-unit id="71">
         <source>mysql</source>
@@ -298,7 +298,7 @@
       </trans-unit>
       <trans-unit id="75">
         <source>gw id</source>
-        <target>gw id</target>
+        <target>ID passerelle</target>
       </trans-unit>
       <trans-unit id="76">
         <source>Description</source>
@@ -306,11 +306,11 @@
       </trans-unit>
       <trans-unit id="77">
         <source>Address civic number</source>
-        <target>No civique</target>
+        <target>Numéro civique</target>
       </trans-unit>
       <trans-unit id="78">
         <source>Street name</source>
-        <target>Rue</target>
+        <target>Nom de rue</target>
       </trans-unit>
       <trans-unit id="79">
         <source>City</source>
@@ -330,7 +330,7 @@
       </trans-unit>
       <trans-unit id="83">
         <source>Public phone number</source>
-        <target>No de téléphone public</target>
+        <target>N° de téléphone public</target>
       </trans-unit>
       <trans-unit id="84">
         <source>Public email</source>
@@ -398,7 +398,7 @@
       </trans-unit>
       <trans-unit id="105">
         <source>Show administrative login link?</source>
-        <target>Montrer lien de login administratif</target>
+        <target>Montrer lien de login administratif ?</target>
       </trans-unit>
       <trans-unit id="106">
         <source>Whether the main menu on the right should display a link to the administrative login page</source>
@@ -406,7 +406,7 @@
       </trans-unit>
       <trans-unit id="107">
         <source>Show network login link?</source>
-        <target>Montrer lien de login réseau</target>
+        <target>Montrer lien de login réseau ?</target>
       </trans-unit>
       <trans-unit id="108">
         <source>Whether the main menu on the right should display a link to the network login page.</source>
@@ -414,7 +414,7 @@
       </trans-unit>
       <trans-unit id="109">
         <source>Plugins marked with * can be configured, but they need to be enabled.</source>
-        <target>Les plugins marqués d'une * peuvent être configurés, mais doivent être activés d'abord</target>
+        <target>Les plugins marqués d'une * peuvent être configurés, mais doivent être d'abord activés.</target>
       </trans-unit>
       <trans-unit id="110">
         <source>Prerequisites</source>
@@ -434,51 +434,51 @@
       </trans-unit>
       <trans-unit id="114">
         <source>Name:</source>
-        <target>Nom:</target>
+        <target>Nom :</target>
       </trans-unit>
       <trans-unit id="115">
         <source>Gw:</source>
-        <target>Gw:</target>
+        <target>Passerelle :</target>
       </trans-unit>
       <trans-unit id="116">
         <source>Description:</source>
-        <target>Description:</target>
+        <target>Description :</target>
       </trans-unit>
       <trans-unit id="117">
         <source>Deployment status:</source>
-        <target>Status de déploiment:</target>
+        <target>Status de déploiement :</target>
       </trans-unit>
       <trans-unit id="118">
         <source>Created at:</source>
-        <target>Date de création:</target>
+        <target>Date de création :</target>
       </trans-unit>
       <trans-unit id="119">
         <source>Updated at:</source>
-        <target>Mis à jour:</target>
+        <target>Mis à jour :</target>
       </trans-unit>
       <trans-unit id="120">
         <source>Civic number:</source>
-        <target>No civique:</target>
+        <target>Numéro civique :</target>
       </trans-unit>
       <trans-unit id="121">
         <source>Street name:</source>
-        <target>Rue:</target>
+        <target>Nom de rue :</target>
       </trans-unit>
       <trans-unit id="122">
         <source>City:</source>
-        <target>Ville:</target>
+        <target>Ville :</target>
       </trans-unit>
       <trans-unit id="123">
         <source>Province:</source>
-        <target>Province:</target>
+        <target>Province :</target>
       </trans-unit>
       <trans-unit id="124">
         <source>Country:</source>
-        <target>Pays:</target>
+        <target>Pays :</target>
       </trans-unit>
       <trans-unit id="125">
         <source>Postal Code:</source>
-        <target>Code postal:</target>
+        <target>Code postal :</target>
       </trans-unit>
       <trans-unit id="126">
         <source>Phone number:</source>
@@ -486,7 +486,7 @@
       </trans-unit>
       <trans-unit id="127">
         <source>Email:</source>
-        <target>Courriel:</target>
+        <target>Courriel :</target>
       </trans-unit>
       <trans-unit id="128">
         <source>Mass transit info:</source>
@@ -494,27 +494,27 @@
       </trans-unit>
       <trans-unit id="129">
         <source>Last heartbeat at:</source>
-        <target>Dernier appel:</target>
+        <target>Dernier contact :</target>
       </trans-unit>
       <trans-unit id="130">
         <source>Last heartbeat ip:</source>
-        <target>Dernier ip:</target>
+        <target>Dernier contact IP :</target>
       </trans-unit>
       <trans-unit id="131">
         <source>Last heartbeat sys uptime:</source>
-        <target>Dernier sys uptime:</target>
+        <target>Dernières données [système] :</target>
       </trans-unit>
       <trans-unit id="132">
         <source>Last heartbeat sys memfree:</source>
-        <target>Dernier sys memfree:</target>
+        <target>Dernières données [mémoire libre] :</target>
       </trans-unit>
       <trans-unit id="133">
         <source>Last heartbeat sys load:</source>
-        <target>Dernier sys load:</target>
+        <target>Dernières données [charge] :</target>
       </trans-unit>
       <trans-unit id="134">
         <source>Last heartbeat wifidog uptime:</source>
-        <target>Dernier wifidog uptime:</target>
+        <target>Dernières données [temps de fonctionnement] :</target>
       </trans-unit>
       <trans-unit id="135">
         <source>Edit</source>
@@ -530,7 +530,7 @@
       </trans-unit>
       <trans-unit id="138">
         <source>Clicking the button below will authenticate you to the router</source>
-        <target>Cliquer sur le bouton ci-dessous pour vous authentifier</target>
+        <target>Cliquez sur le bouton ci-dessous pour vous authentifier</target>
       </trans-unit>
       <trans-unit id="139">
         <source>Login</source>
@@ -546,19 +546,19 @@
       </trans-unit>
       <trans-unit id="142">
         <source>Database name</source>
-        <target>Nom de la BD</target>
+        <target>Nom de la BDD</target>
       </trans-unit>
       <trans-unit id="143">
         <source>Database username</source>
-        <target>Nom d'usager de la BD</target>
+        <target>Nom d'usager de la BDD</target>
       </trans-unit>
       <trans-unit id="144">
         <source>Database password</source>
-        <target>Mot de passe de la BD</target>
+        <target>Mot de passe de la BDD</target>
       </trans-unit>
       <trans-unit id="145">
         <source>Database host</source>
-        <target>Serveur BD</target>
+        <target>Serveur BDD</target>
       </trans-unit>
       <trans-unit id="146">
         <source>If for any reason this automatic file creation doesn't work, don't worry. All this does is fill in the database information to a configuration file. You may also simply open &lt;code&gt;databases.yml&lt;/code&gt; in a text editor, fill in your information, and save it.</source>
@@ -570,7 +570,7 @@
       </trans-unit>
       <trans-unit id="148">
         <source>Let&amp;#8217;s go!</source>
-        <target>Commencer!</target>
+        <target>Commencer !</target>
       </trans-unit>
       <trans-unit id="149">
         <source>Next</source>
@@ -578,7 +578,7 @@
       </trans-unit>
       <trans-unit id="150">
         <source>cURL PHP extension is loaded?</source>
-        <target>Extension PHP cURL chargée?</target>
+        <target>Extension PHP cURL chargée ?</target>
       </trans-unit>
       <trans-unit id="151">
         <source>For &lt;strong&gt;more information&lt;/strong&gt; on the installation process visit &lt;a href='http://www.authpuppy.org/doc/Getting_Started'&gt;the Getting Started page&lt;/a&gt;</source>
@@ -606,11 +606,15 @@
       </trans-unit>
       <trans-unit id="157">
         <source>Show node and connection information?</source>
-        <target>Montrer l'information des nodes et connections</target>
+        <target>Montrer l'information des nodes et connections ?</target>
       </trans-unit>
       <trans-unit id="158">
         <source>If checked, the header of the page will show how many deployed nodes are on the network and how many active connection currently run</source>
         <target>Si coché, l'entête montrera le nombre de noeuds déployés sur le réseau et le nombre de connections actives</target>
+      </trans-unit>
+      <trans-unit id="159">
+	<source>Signin</source>
+	<target>Connexion</target>
       </trans-unit>
     </body>
   </file>
