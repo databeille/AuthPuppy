@@ -1,33 +1,5 @@
 <?php
 
-// +------------------------------------------------------------------------+
-// | AuthPuppy Authentication Server                                        |
-// | ===============================                                        |
-// |                                                                        |
-// | AuthPuppy is the new generation of authentication server for           |
-// | a wifidog based captive portal suite                                   |
-// +------------------------------------------------------------------------+
-// | PHP version 5 required.                                                |
-// +------------------------------------------------------------------------+
-// | Homepage:     http://www.authpuppy.org/                                |
-// | Launchpad:    http://www.launchpad.net/authpuppy                       |
-// +------------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify   |
-// | it under the terms of the GNU General Public License as published by   |
-// | the Free Software Foundation; either version 2 of the License, or      |
-// | (at your option) any later version.                                    |
-// |                                                                        |
-// | This program is distributed in the hope that it will be useful,        |
-// | but WITHOUT ANY WARRANTY; without even the implied warranty of         |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          |
-// | GNU General Public License for more details.                           |
-// |                                                                        |
-// | You should have received a copy of the GNU General Public License along|
-// | with this program; if not, write to the Free Software Foundation, Inc.,|
-// | 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            |
-// +------------------------------------------------------------------------+
-
-
 /**
  * BaseNode
  * 
@@ -96,10 +68,9 @@
  * @method Node                setConnection()                    Sets the current record's "Connection" collection
  * 
  * @package    authpuppy
- * @author     Geneviève Bastien <gbastien@versatic.net>
- * @author     Philippe April <philippe@philippeapril.com>
- * @copyright  2010
- * @version    $Version: 0.1.0$
+ * @subpackage model
+ * @author     Frédéric Sheedy
+ * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
 abstract class BaseNode extends sfDoctrineRecord
 {
@@ -109,64 +80,64 @@ abstract class BaseNode extends sfDoctrineRecord
         $this->hasColumn('name', 'string', 150, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('gw_id', 'string', 50, array(
              'type' => 'string',
              'notnull' => true,
              'unique' => true,
-             'length' => '50',
+             'length' => 50,
              ));
         $this->hasColumn('description', 'string', 1000, array(
              'type' => 'string',
-             'length' => '1000',
+             'length' => 1000,
              ));
         $this->hasColumn('civic_number', 'string', 20, array(
              'type' => 'string',
-             'length' => '20',
+             'length' => 20,
              ));
         $this->hasColumn('street_name', 'string', 150, array(
              'type' => 'string',
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('city', 'string', 150, array(
              'type' => 'string',
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('province', 'string', 150, array(
              'type' => 'string',
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('country', 'string', 150, array(
              'type' => 'string',
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('postal_code', 'string', 15, array(
              'type' => 'string',
-             'length' => '15',
+             'length' => 15,
              ));
         $this->hasColumn('public_phone_number', 'string', 50, array(
              'type' => 'string',
-             'length' => '50',
+             'length' => 50,
              ));
         $this->hasColumn('public_email', 'string', 150, array(
              'type' => 'string',
-             'length' => '150',
+             'length' => 150,
              ));
         $this->hasColumn('mass_transit_info', 'string', 500, array(
              'type' => 'string',
-             'length' => '500',
+             'length' => 500,
              ));
         $this->hasColumn('deployment_status', 'string', 20, array(
              'type' => 'string',
-             'length' => '20',
+             'length' => 20,
              ));
         $this->hasColumn('last_heartbeat_at', 'timestamp', null, array(
              'type' => 'timestamp',
              ));
         $this->hasColumn('last_heartbeat_ip', 'string', 255, array(
              'type' => 'string',
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('last_heartbeat_sys_uptime', 'integer', null, array(
              'type' => 'integer',
@@ -184,18 +155,19 @@ abstract class BaseNode extends sfDoctrineRecord
         $this->option('symfony', array(
              'form' => false,
              'filter' => false,
-             'model' => true,
+             'model' => false,
              ));
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Connection as Connections', array(
+        $this->hasMany('Connection', array(
              'local' => 'id',
              'foreign' => 'node_id'));
 
-        $timestampable0 = new Doctrine_Template_Timestampable();
+        $timestampable0 = new Doctrine_Template_Timestampable(array(
+             ));
         $this->actAs($timestampable0);
     }
 }

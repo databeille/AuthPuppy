@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: DebugPDOStatement.php 1262 2009-10-26 20:54:39Z francois $
+ *  $Id: DebugPDOStatement.php 1601 2010-03-15 13:06:11Z francois $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -77,7 +77,8 @@ class DebugPDOStatement extends PDOStatement
 		
 		$matches = array();
 		if (preg_match_all('/(:p[0-9]+\b)/', $sql, $matches)) {
-			for ($i = 0; $i < count($matches[1]); $i++) {
+			$size = count($matches[1]);
+			for ($i = $size-1; $i >= 0; $i--) { 
 				$pos = $matches[1][$i];
 				$sql = str_replace($pos, $this->boundValues[$pos], $sql);
 			}

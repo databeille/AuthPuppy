@@ -1,33 +1,5 @@
 <?php
 
-// +------------------------------------------------------------------------+
-// | AuthPuppy Authentication Server                                        |
-// | ===============================                                        |
-// |                                                                        |
-// | AuthPuppy is the new generation of authentication server for           |
-// | a wifidog based captive portal suite                                   |
-// +------------------------------------------------------------------------+
-// | PHP version 5 required.                                                |
-// +------------------------------------------------------------------------+
-// | Homepage:     http://www.authpuppy.org/                                |
-// | Launchpad:    http://www.launchpad.net/authpuppy                       |
-// +------------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify   |
-// | it under the terms of the GNU General Public License as published by   |
-// | the Free Software Foundation; either version 2 of the License, or      |
-// | (at your option) any later version.                                    |
-// |                                                                        |
-// | This program is distributed in the hope that it will be useful,        |
-// | but WITHOUT ANY WARRANTY; without even the implied warranty of         |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          |
-// | GNU General Public License for more details.                           |
-// |                                                                        |
-// | You should have received a copy of the GNU General Public License along|
-// | with this program; if not, write to the Free Software Foundation, Inc.,|
-// | 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            |
-// +------------------------------------------------------------------------+
-
-
 /**
  * BaseapPluginConfig
  * 
@@ -45,10 +17,9 @@
  * @method apPluginConfig setConfigValue()   Sets the current record's "config_value" value
  * 
  * @package    authpuppy
- * @author     Geneviève Bastien <gbastien@versatic.net>
- * @author     Philippe April <philippe@philippeapril.com>
- * @copyright  2010
- * @version    $Version: 0.1.0$
+ * @subpackage model
+ * @author     Frédéric Sheedy
+ * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
 abstract class BaseapPluginConfig extends sfDoctrineRecord
 {
@@ -58,12 +29,12 @@ abstract class BaseapPluginConfig extends sfDoctrineRecord
         $this->hasColumn('pluginname', 'string', 50, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => '50',
+             'length' => 50,
              ));
         $this->hasColumn('config_option', 'string', 250, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => '250',
+             'length' => 250,
              ));
         $this->hasColumn('config_value', 'string', null, array(
              'type' => 'string',

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 /**
@@ -25,10 +25,10 @@
  * @package     Doctrine
  * @subpackage  AuditLog
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @since       1.0
  * @version     $Revision$
- * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
+ * @author      Lukas Smith <smith@pooteeweet.org>
  */
 class Doctrine_AuditLog_Listener_Microtime extends Doctrine_AuditLog_Listener
 {
@@ -37,7 +37,22 @@ class Doctrine_AuditLog_Listener_Microtime extends Doctrine_AuditLog_Listener
      *
      * @var int
      */
-    protected $accuracy = 9;
+    protected $accuracy = 10;
+
+    /**
+     * Instantiate AuditLog listener and set the Doctrine_AuditLog instance to the class
+     *
+     * @param   Doctrine_AuditLog $auditLog
+     * @return  void
+     */
+    public function __construct(Doctrine_AuditLog $auditLog)
+    {
+        parent::__construct($auditLog);
+        $version = $this->_auditLog->getOption('version');
+        if (!empty($version['accuracy'])) {
+            $this->accuracy = $version['accuracy'];
+        }
+    }
 
     /**
      * Get the initial version number for the audit log

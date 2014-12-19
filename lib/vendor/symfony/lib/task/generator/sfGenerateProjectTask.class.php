@@ -16,7 +16,7 @@ require_once(dirname(__FILE__).'/sfGeneratorBaseTask.class.php');
  * @package    symfony
  * @subpackage task
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfGenerateProjectTask.class.php 23922 2009-11-14 14:58:38Z fabien $
+ * @version    SVN: $Id: sfGenerateProjectTask.class.php 30530 2010-08-04 16:38:41Z fabien $
  */
 class sfGenerateProjectTask extends sfGeneratorBaseTask
 {
@@ -114,7 +114,7 @@ EOF;
       sprintf('dirname(__FILE__).\'/..%s/autoload/sfCoreAutoload.class.php\'', str_replace(sfConfig::get('sf_root_dir'), '', sfConfig::get('sf_symfony_lib_dir'))) :
       var_export(sfConfig::get('sf_symfony_lib_dir').'/autoload/sfCoreAutoload.class.php', true);
 
-    $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array('SYMFONY_CORE_AUTOLOAD' => $symfonyCoreAutoload));
+    $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array('SYMFONY_CORE_AUTOLOAD' => str_replace('\\', '/', $symfonyCoreAutoload)));
 
     $this->tokens = array(
       'ORM'          => $this->options['orm'],
@@ -134,9 +134,11 @@ EOF;
     // execute a custom installer
     if ($options['installer'] && $this->commandApplication)
     {
-      $this->reloadTasks();
-
-      include $options['installer'];
+      if ($this->canRunInstaller($options['installer']))
+      {
+        $this->reloadTasks();
+        include $options['installer'];
+      }
     }
 
     // fix permission for common directories
@@ -146,5 +148,22 @@ EOF;
     $fixPerms->run();
 
     $this->replaceTokens();
+  }
+
+  protected function canRunInstaller($installer)
+  {
+    if (preg_match('#^(https?|ftps?)://#', $installer))
+    {
+      if (ini_get('allow_url_fopen') === false)
+      {
+        $this->logSection('generate', sprintf('Cannot run remote installer "%s" because "allow_url_fopen" is off', $installer));
+      }
+      if (ini_get('allow_url_include') === false)
+      {
+        $this->logSection('generate', sprintf('Cannot run remote installer "%s" because "allow_url_include" is off', $installer));
+      }
+      return ini_get('allow_url_fopen') && ini_get('allow_url_include');
+    }
+    return true;
   }
 }

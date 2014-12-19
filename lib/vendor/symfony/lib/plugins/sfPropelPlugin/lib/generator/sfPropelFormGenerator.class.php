@@ -16,7 +16,7 @@
  * @package    symfony
  * @subpackage generator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfPropelFormGenerator.class.php 24392 2009-11-25 18:35:39Z FabianLange $
+ * @version    SVN: $Id: sfPropelFormGenerator.class.php 33137 2011-10-18 13:05:25Z fabien $
  */
 class sfPropelFormGenerator extends sfGenerator
 {
@@ -61,10 +61,8 @@ class sfPropelFormGenerator extends sfGenerator
       $this->params['form_dir_name'] = 'form';
     }
 
-    $this->dbMap = Propel::getDatabaseMap($this->params['connection']);
-
     $this->loadBuilders();
-    
+
     // create the project base class for all forms
     $file = sfConfig::get('sf_lib_dir').'/form/BaseFormPropel.class.php';
     if (!file_exists($file))
@@ -325,9 +323,13 @@ class sfPropelFormGenerator extends sfGenerator
         $name = 'Pass';
     }
 
-    if ($column->isPrimaryKey() || $column->isForeignKey())
+    if ($column->isForeignKey())
     {
       $name = 'PropelChoice';
+    }
+    else if ($column->isPrimaryKey())
+    {
+      $name = 'Choice';
     }
 
     return sprintf('sfValidator%s', $name);
@@ -350,7 +352,7 @@ class sfPropelFormGenerator extends sfGenerator
     }
     else if ($column->isPrimaryKey())
     {
-      $options[] = sprintf('\'model\' => \'%s\', \'column\' => \'%s\'', $column->getTable()->getClassname(), $this->translateColumnName($column));
+      $options[] = sprintf('\'choices\' => array($this->getObject()->get%s()), \'empty_value\' => $this->getObject()->get%1$s()', $this->translateColumnName($column, false, BasePeer::TYPE_PHPNAME));
     }
     else
     {
@@ -511,7 +513,7 @@ class sfPropelFormGenerator extends sfGenerator
     foreach ($classes as $class)
     {
       $omClass = basename($class, 'TableMap.php');
-      if (class_exists($omClass) && is_subclass_of($omClass, 'BaseObject'))
+      if (class_exists($omClass) && is_subclass_of($omClass, 'BaseObject') && constant($omClass.'Peer::DATABASE_NAME') == $this->params['connection'])
       {
         $tableMapClass = basename($class, '.php');
         $this->dbMap->addTableFromMapClass($tableMapClass);
@@ -519,4 +521,3 @@ class sfPropelFormGenerator extends sfGenerator
     }
   }
 }
-

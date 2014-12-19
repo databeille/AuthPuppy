@@ -16,7 +16,7 @@
  * @subpackage user
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Sean Kerr <sean@code-box.org>
- * @version    SVN: $Id: sfBasicSecurityUser.class.php 24045 2009-11-16 18:24:48Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfBasicSecurityUser.class.php 33466 2012-05-30 07:33:03Z fabien $
  */
 class sfBasicSecurityUser extends sfUser implements sfSecurityUser
 {
@@ -37,7 +37,6 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
    */
   public function clearCredentials()
   {
-    $this->credentials = null;
     $this->credentials = array();
   }
 
@@ -71,7 +70,7 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
 
           unset($this->credentials[$key]);
 
-          $this->storage->regenerate(false);
+          $this->storage->regenerate(true);
 
           return;
         }
@@ -118,7 +117,7 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
 
     if ($added)
     {
-      $this->storage->regenerate(false);
+      $this->storage->regenerate(true);
     }
   }
 
@@ -133,6 +132,11 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
    */
   public function hasCredential($credentials, $useAnd = true)
   {
+    if (null === $this->credentials)
+    {
+      return false;
+    }
+
     if (!is_array($credentials))
     {
       return in_array($credentials, $this->credentials);
@@ -201,7 +205,7 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
 
       $this->dispatcher->notify(new sfEvent($this, 'user.change_authentication', array('authenticated' => $this->authenticated)));
 
-      $this->storage->regenerate(false);
+      $this->storage->regenerate(true);
     }
   }
 

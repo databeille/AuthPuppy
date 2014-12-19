@@ -16,7 +16,7 @@
  * @package    symfony
  * @subpackage util
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfBrowserBase.class.php 23901 2009-11-14 13:33:03Z bschussek $
+ * @version    SVN: $Id: sfBrowserBase.class.php 33373 2012-03-08 15:45:46Z fabien $
  */
 abstract class sfBrowserBase
 {
@@ -186,7 +186,7 @@ abstract class sfBrowserBase
    */
   public function get($uri, $parameters = array(), $changeStack = true)
   {
-    return $this->call($uri, 'get', $parameters);
+    return $this->call($uri, 'get', $parameters, $changeStack);
   }
 
   /**
@@ -200,7 +200,7 @@ abstract class sfBrowserBase
    */
   public function post($uri, $parameters = array(), $changeStack = true)
   {
-    return $this->call($uri, 'post', $parameters);
+    return $this->call($uri, 'post', $parameters, $changeStack);
   }
 
   /**
@@ -700,7 +700,10 @@ abstract class sfBrowserBase
     $query .= sprintf('|//input[((@type="submit" or @type="button") and @value="%s") or (@type="image" and @alt="%s")]', $name, $name);
     $query .= sprintf('|//button[.="%s" or @id="%s" or @name="%s"]', $name, $name, $name);
 
-    $list = $this->getResponseDomXpath()->query($query);
+    if (!$list = @$this->getResponseDomXpath()->query($query))
+    {
+      throw new InvalidArgumentException(sprintf('The name "%s" is not valid', $name));
+    }
 
     $position = isset($options['position']) ? $options['position'] - 1 : 0;
 
@@ -805,6 +808,11 @@ abstract class sfBrowserBase
     $xpath = $this->getResponseDomXpath();
     foreach ($xpath->query('descendant::input | descendant::textarea | descendant::select', $item) as $element)
     {
+      if ($element->hasAttribute('disabled'))
+      {
+        continue;
+      }
+
       $elementName = $element->getAttribute('name');
       $nodeName    = $element->nodeName;
       $value       = null;
@@ -922,7 +930,7 @@ abstract class sfBrowserBase
       {
         $var = &$var[$tmp];
       }
-      if ($var)
+      if ($var && '[]' === substr($name, -2))
       {
         if (!is_array($var))
         {

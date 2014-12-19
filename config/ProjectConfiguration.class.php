@@ -60,6 +60,8 @@ class ProjectConfiguration extends sfProjectConfiguration
     // apEventDispatcher::createInstance($this->dispatcher);
     $this->enablePlugins($plugins);
 
+    $this->enablePlugins('sfFormExtraPlugin');
+    $this->enablePlugins('sfDoctrineGuardPlugin');
   }
   
 }

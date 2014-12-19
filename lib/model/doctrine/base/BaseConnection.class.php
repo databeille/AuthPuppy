@@ -1,33 +1,5 @@
 <?php
 
-// +------------------------------------------------------------------------+
-// | AuthPuppy Authentication Server                                        |
-// | ===============================                                        |
-// |                                                                        |
-// | AuthPuppy is the new generation of authentication server for           |
-// | a wifidog based captive portal suite                                   |
-// +------------------------------------------------------------------------+
-// | PHP version 5 required.                                                |
-// +------------------------------------------------------------------------+
-// | Homepage:     http://www.authpuppy.org/                                |
-// | Launchpad:    http://www.launchpad.net/authpuppy                       |
-// +------------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify   |
-// | it under the terms of the GNU General Public License as published by   |
-// | the Free Software Foundation; either version 2 of the License, or      |
-// | (at your option) any later version.                                    |
-// |                                                                        |
-// | This program is distributed in the hope that it will be useful,        |
-// | but WITHOUT ANY WARRANTY; without even the implied warranty of         |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          |
-// | GNU General Public License for more details.                           |
-// |                                                                        |
-// | You should have received a copy of the GNU General Public License along|
-// | with this program; if not, write to the Free Software Foundation, Inc.,|
-// | 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            |
-// +------------------------------------------------------------------------+
-
-
 /**
  * BaseConnection
  * 
@@ -40,8 +12,8 @@
  * @property string $ip
  * @property string $auth_type
  * @property string $identity
- * @property integer $incoming
- * @property integer $outgoing
+ * @property float $incoming
+ * @property float $outgoing
  * @property Node $Node
  * 
  * @method integer    getNodeId()    Returns the current record's "node_id" value
@@ -51,8 +23,8 @@
  * @method string     getIp()        Returns the current record's "ip" value
  * @method string     getAuthType()  Returns the current record's "auth_type" value
  * @method string     getIdentity()  Returns the current record's "identity" value
- * @method integer    getIncoming()  Returns the current record's "incoming" value
- * @method integer    getOutgoing()  Returns the current record's "outgoing" value
+ * @method float      getIncoming()  Returns the current record's "incoming" value
+ * @method float      getOutgoing()  Returns the current record's "outgoing" value
  * @method Node       getNode()      Returns the current record's "Node" value
  * @method Connection setNodeId()    Sets the current record's "node_id" value
  * @method Connection setToken()     Sets the current record's "token" value
@@ -66,10 +38,9 @@
  * @method Connection setNode()      Sets the current record's "Node" value
  * 
  * @package    authpuppy
- * @author     Geneviève Bastien <gbastien@versatic.net>
- * @author     Philippe April <philippe@philippeapril.com>
- * @copyright  2010
- * @version    $Version: 0.1.0$
+ * @subpackage model
+ * @author     Frédéric Sheedy
+ * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
 abstract class BaseConnection extends sfDoctrineRecord
 {
@@ -84,32 +55,28 @@ abstract class BaseConnection extends sfDoctrineRecord
              'type' => 'string',
              'unique' => true,
              'notnull' => true,
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('status', 'string', 255, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('mac', 'string', 255, array(
              'type' => 'string',
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('ip', 'string', 255, array(
              'type' => 'string',
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('auth_type', 'string', 255, array(
              'type' => 'string',
-             'length' => '255',
-             ));
-        $this->hasColumn('auth_sub_type', 'string', 255, array(
-             'type' => 'string',
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('identity', 'string', 255, array(
              'type' => 'string',
-             'length' => '255',
+             'length' => 255,
              ));
         $this->hasColumn('incoming', 'float', null, array(
              'type' => 'float',
@@ -119,31 +86,24 @@ abstract class BaseConnection extends sfDoctrineRecord
              'type' => 'float',
              'default' => 0,
              ));
-        $this->hasColumn('user_agent', 'string', 500, array(
-             'type' => 'string',
-             'length' => 500,
-             ));
-        $this->hasColumn('disconnect_reason', 'string', 1000, array(
-             'type' => 'string',
-             'length' => 1000,
-             ));
 
         $this->option('symfony', array(
              'form' => false,
              'filter' => false,
-             'model' => true,
+             'model' => false,
              ));
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('Node as NodeRel', array(
+        $this->hasOne('Node', array(
              'local' => 'node_id',
              'foreign' => 'id',
              'onDelete' => 'CASCADE'));
 
-        $timestampable0 = new Doctrine_Template_Timestampable();
+        $timestampable0 = new Doctrine_Template_Timestampable(array(
+             ));
         $this->actAs($timestampable0);
     }
 }

@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage task
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfTestAllTask.class.php 24266 2009-11-23 12:11:51Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfTestAllTask.class.php 29415 2010-05-12 06:24:54Z fabien $
  */
 class sfTestAllTask extends sfTestBaseTask
 {
@@ -42,7 +42,7 @@ The task launches all tests found in [test/|COMMENT].
 If some tests fail, you can use the [--trace|COMMENT] option to have more
 information about the failures:
 
-    [./symfony test:all -t|INFO]
+  [./symfony test:all -t|INFO]
 
 Or you can also try to fix the problem by launching them by hand or with the
 [test:unit|COMMENT] and [test:functional|COMMENT] task.
@@ -50,7 +50,7 @@ Or you can also try to fix the problem by launching them by hand or with the
 Use the [--only-failed|COMMENT] option to force the task to only execute tests
 that failed during the previous run:
 
-    [./symfony test:all --only-failed|INFO]
+  [./symfony test:all --only-failed|INFO]
 
 Here is how it works: the first time, all tests are run as usual. But for
 subsequent test runs, only tests that failed last time are executed. As you
@@ -72,7 +72,10 @@ EOF;
   {
     require_once dirname(__FILE__).'/sfLimeHarness.class.php';
 
-    $h = new sfLimeHarness(array('force_colors' => $options['color'], 'verbose' => $options['trace']));
+    $h = new sfLimeHarness(array(
+      'force_colors' => isset($options['color']) && $options['color'],
+      'verbose'      => isset($options['trace']) && $options['trace'],
+    ));
     $h->addPlugins(array_map(array($this->configuration, 'getPluginConfiguration'), $this->configuration->getPlugins()));
     $h->base_dir = sfConfig::get('sf_test_dir');
 

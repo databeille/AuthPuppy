@@ -49,7 +49,7 @@ class BasesfGuardAuthActions extends sfActions
       if ($request->isXmlHttpRequest())
       {
         $this->getResponse()->setHeaderOnly(true);
-       // $this->getResponse()->setStatusCode(401);
+        $this->getResponse()->setStatusCode(401);
 
         return sfView::NONE;
       }
@@ -64,7 +64,7 @@ class BasesfGuardAuthActions extends sfActions
         return $this->redirect($module.'/'.sfConfig::get('sf_login_action'));
       }
 
-      //$this->getResponse()->setStatusCode(401);
+      $this->getResponse()->setStatusCode(401);
     }
   }
 
