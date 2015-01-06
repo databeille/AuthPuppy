@@ -14,7 +14,7 @@
     <?php include_partial('sfGuardUser/filters', array('form' => $filters, 'configuration' => $configuration)) ?>
   </div>
 
-  <div id="sf_admin_content">
+  <div id="sf_admin_content" style="clear: both;">
     <form action="<?php echo url_for('sf_guard_user_collection', array('action' => 'batch')) ?>" method="post">
     <?php include_partial('sfGuardUser/list', array('pager' => $pager, 'sort' => $sort, 'helper' => $helper)) ?>
     <ul class="sf_admin_actions">

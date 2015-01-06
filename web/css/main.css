@@ -100,6 +100,7 @@ ul.menu a {
 
 ul.menu li {
   margin-top: 1px;
+  list-style: none;
 }
 
 ul.menu li a, ul.menu ul.menu li a {
