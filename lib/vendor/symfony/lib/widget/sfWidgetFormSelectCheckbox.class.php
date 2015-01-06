@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage widget
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfWidgetFormSelectCheckbox.class.php 23994 2009-11-15 22:55:24Z bschussek $
+ * @version    SVN: $Id: sfWidgetFormSelectCheckbox.class.php 33362 2012-03-08 13:53:08Z fabien $
  */
 class sfWidgetFormSelectCheckbox extends sfWidgetFormChoiceBase
 {
@@ -48,6 +48,8 @@ class sfWidgetFormSelectCheckbox extends sfWidgetFormChoiceBase
   }
 
   /**
+   * Renders the widget.
+   *
    * @param  string $name        The element name
    * @param  string $value       The value selected in this widget
    * @param  array  $attributes  An array of HTML attributes to be merged with the default HTML attributes
@@ -100,14 +102,14 @@ class sfWidgetFormSelectCheckbox extends sfWidgetFormChoiceBase
         'id'    => $id = $this->generateId($name, self::escapeOnce($key)),
       );
 
-      if ((is_array($value) && in_array(strval($key), $value)) || strval($key) == strval($value))
+      if ((is_array($value) && in_array(strval($key), $value)) || (is_string($value) && strval($key) == strval($value)))
       {
         $baseAttributes['checked'] = 'checked';
       }
 
       $inputs[$id] = array(
         'input' => $this->renderTag('input', array_merge($baseAttributes, $attributes)),
-        'label' => $this->renderContentTag('label', $option, array('for' => $id)),
+        'label' => $this->renderContentTag('label', self::escapeOnce($option), array('for' => $id)),
       );
     }
 

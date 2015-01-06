@@ -59,7 +59,7 @@ class SoftDeleteBehavior extends Behavior
   public function preDelete()
   {
   	return <<<EOT
-if ({$this->getTable()->getPhpName()}Peer::isSoftDeleteEnabled()) {
+if (!empty(\$ret) && {$this->getTable()->getPhpName()}Peer::isSoftDeleteEnabled()) {
 	\$this->{$this->getColumnSetter()}(time());
 	\$this->save();
 	\$con->commit();
@@ -113,7 +113,7 @@ EOT;
   
   public function staticMethods()
   {
-  	return <<<EOT
+  	$script = "
 
 /**
  * Enable the soft_delete behavior for this model
@@ -139,7 +139,9 @@ public static function isSoftDeleteEnabled()
 {
 	return self::\$softDelete;
 }
-
+";
+	
+	$script .= "
 /**
  * Soft delete records, given a {$this->getTable()->getPhpName()} or Criteria object OR a primary key value.
  *
@@ -160,8 +162,21 @@ public static function doSoftDelete(\$values, PropelPDO \$con = null)
 		\$criteria = \$values->buildPkeyCriteria();
 	} else {
 		// it must be the primary key
-		\$criteria = new Criteria(self::DATABASE_NAME);
-		\$criteria->add({$this->getTable()->getPhpName()}Peer::ID, (array) \$values, Criteria::IN);
+		\$criteria = new Criteria(self::DATABASE_NAME);";
+		$pks = $this->getTable()->getPrimaryKey();
+		if (count($pks)>1) {
+			$i = 0;
+			foreach ($pks as $col) {
+				$script .= "
+		\$criteria->add({$col->getConstantName()}, \$values[$i], Criteria::EQUAL);";
+				$i++;
+			}
+		} else  {
+			$col = $pks[0];
+			$script .= "
+		\$criteria->add({$col->getConstantName()}, (array) \$values, Criteria::IN);";
+		}
+		$script .= "
 	}
 	\$criteria->add({$this->getColumnForParameter('deleted_column')->getConstantName()}, time());
 	return {$this->getTable()->getPhpName()}Peer::doUpdate(\$criteria, \$con);
@@ -218,12 +233,13 @@ public static function doSoftDeleteAll(PropelPDO \$con = null)
 public static function doDeleteAll2(PropelPDO \$con = null)
 {
 	if ({$this->getTable()->getPhpName()}Peer::isSoftDeleteEnabled()) {
-		return {$this->getTable()->getPhpName()}Peer::doSoftDeleteAll(\$values, \$con);
+		return {$this->getTable()->getPhpName()}Peer::doSoftDeleteAll(\$con);
 	} else {
-		return {$this->getTable()->getPhpName()}Peer::doForceDeleteAll(\$values, \$con);
+		return {$this->getTable()->getPhpName()}Peer::doForceDeleteAll(\$con);
 	}	
 }
-EOT;
+";
+	return $script;
   }
   
   public function peerFilter(&$script)

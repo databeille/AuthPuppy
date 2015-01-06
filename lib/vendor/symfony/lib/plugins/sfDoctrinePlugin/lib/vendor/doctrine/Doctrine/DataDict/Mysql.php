@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Mysql.php 7077 2010-01-29 03:35:10Z hobodave $
+ *  $Id: Mysql.php 7635 2010-06-08 13:56:17Z jwage $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 /**
@@ -25,8 +25,8 @@
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Lukas Smith <smith@pooteeweet.org> (PEAR MDB2 library)
- * @version     $Revision: 7077 $
- * @link        www.phpdoctrine.org
+ * @version     $Revision: 7635 $
+ * @link        www.doctrine-project.org
  * @since       1.0
  */
 class Doctrine_DataDict_Mysql extends Doctrine_DataDict
@@ -504,7 +504,7 @@ class Doctrine_DataDict_Mysql extends Doctrine_DataDict
         $notnull  = (isset($field['notnull'])  && $field['notnull'])  ? ' NOT NULL' : '';
         $unsigned = (isset($field['unsigned']) && $field['unsigned']) ? ' UNSIGNED' : '';
         $comment  = (isset($field['comment']) && $field['comment']) 
-            ? " COMMENT '" . $field['comment'] . "'" : '';
+            ? " COMMENT " . $this->conn->quote($field['comment'], 'text') : '';
 
         $name = $this->conn->quoteIdentifier($name, true);
 

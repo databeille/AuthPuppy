@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage debug
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfWebDebug.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfWebDebug.class.php 32890 2011-08-05 07:44:44Z fabien $
  */
 class sfWebDebug
 {
@@ -154,14 +154,33 @@ class sfWebDebug
    */
   public function injectToolbar($content)
   {
-    $content = str_ireplace('</head>', '<style type="text/css">'.str_replace(array("\r", "\n"), ' ', $this->getStylesheet()).'</style></head>', $content);
+    if (function_exists('mb_stripos'))
+    {
+      $posFunction = 'mb_stripos';
+      $posrFunction = 'mb_strripos';
+      $substrFunction = 'mb_substr';
+    }
+    else
+    {
+      $posFunction = 'stripos';
+      $posrFunction = 'strripos';
+      $substrFunction = 'substr';
+    }
+
+    if (false !== $pos = $posFunction($content, '</head>'))
+    {
+      $styles = '<style type="text/css">'.str_replace(array("\r", "\n"), ' ', $this->getStylesheet()).'</style>';
+      $content = $substrFunction($content, 0, $pos).$styles.$substrFunction($content, $pos);
+    }
 
     $debug = $this->asHtml();
-    $count = 0;
-    $content = str_ireplace('</body>', '<script type="text/javascript">'.$this->getJavascript().'</script>'.$debug.'</body>', $content, $count);
-    if (!$count)
+    if (false === $pos = $posrFunction($content, '</body>'))
     {
       $content .= $debug;
+    }
+    else
+    {
+      $content = $substrFunction($content, 0, $pos).'<script type="text/javascript">'.$this->getJavascript().'</script>'.$debug.$substrFunction($content, $pos);
     }
 
     return $content;
@@ -185,8 +204,8 @@ class sfWebDebug
         if (($content = $panel->getPanelContent()) || $panel->getTitleUrl())
         {
           $id = sprintf('sfWebDebug%sDetails', $name);
-          $titles[] = sprintf('<li class="%s"><a title="%s" href="%s"%s>%s</a></li>',
-            $panel->getStatus() ? 'sfWebDebug'.ucfirst($this->getPriority($panel->getStatus())) : '',
+          $titles[] = sprintf('<li%s><a title="%s" href="%s"%s>%s</a></li>',
+            $panel->getStatus() ? ' class="sfWebDebug'.ucfirst($this->getPriority($panel->getStatus())).'"' : '',
             $panel->getPanelTitle(),
             $panel->getTitleUrl() ? $panel->getTitleUrl() : '#',
             $panel->getTitleUrl() ? '' : ' onclick="sfWebDebugShowDetailsFor(\''.$id.'\'); return false;"',
@@ -268,7 +287,7 @@ function sfWebDebugGetElementsByClassName(strClass, strTag, objContElm)
   var j = objColl.length;
   for (var i = 0; i < j; i++) {
     if(objColl[i].className == undefined) continue;
-    var arrObjClass = objColl[i].className.split(' ');
+    var arrObjClass = objColl[i].className.split ? objColl[i].className.split(' ') : [];
     if (delim == ' ' && arrClass.length > arrObjClass.length) continue;
     var c = 0;
     comparisonLoop:
@@ -761,7 +780,7 @@ EOF;
   margin: 0;
   padding: 0;
   margin-left: 20px;
-  list-style: number;
+  list-style: decimal;
 }
 
 #sfWebDebugDatabaseLogs li

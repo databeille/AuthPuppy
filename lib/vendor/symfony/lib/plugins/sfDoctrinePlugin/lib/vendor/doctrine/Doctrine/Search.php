@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 /**
@@ -27,7 +27,7 @@
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @version     $Revision$
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @since       1.0
  */
 class Doctrine_Search extends Doctrine_Record_Generator
@@ -76,7 +76,9 @@ class Doctrine_Search extends Doctrine_Record_Generator
         $result = parent::buildTable();
 
         if ( ! isset($this->_options['connection'])) {
-            $this->_options['connection'] = $this->_options['table']->getConnection();
+            $manager = Doctrine_Manager::getInstance();
+            $this->_options['connection'] = $manager->getConnectionForComponent($this->_options['table']->getComponentName());
+            $manager->bindComponent($this->_options['className'], $this->_options['connection']->getName());
         }
 
         return $result;
@@ -225,7 +227,7 @@ class Doctrine_Search extends Doctrine_Record_Generator
         $id        = $table->getIdentifierColumnNames();
         $class     = $this->_options['className'];
         $fields    = $this->_options['fields'];
-        $conn      = $this->_options['connection'];
+        $conn      = $this->_options['table']->getConnection();
         
         for ($i = 0; $i < count($fields); $i++) {
             $fields[$i] = $table->getColumnName($fields[$i], $fields[$i]);

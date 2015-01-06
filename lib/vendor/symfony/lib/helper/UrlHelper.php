@@ -14,9 +14,12 @@
  * @package    symfony
  * @subpackage helper
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: UrlHelper.php 24466 2009-11-27 09:04:48Z fabien $
+ * @version    SVN: $Id: UrlHelper.php 31396 2010-11-15 16:08:26Z fabien $
  */
 
+/**
+ * @ignore
+ */
 function link_to2($name, $routeName, $params, $options = array())
 {
   $params = array_merge(array('sf_route' => $routeName), is_object($params) ? array('sf_subject' => $params) : $params);
@@ -24,6 +27,9 @@ function link_to2($name, $routeName, $params, $options = array())
   return link_to1($name, $params, $options);
 }
 
+/**
+ * @ignore
+ */
 function link_to1($name, $internal_uri, $options = array())
 {
   $html_options = _parse_attributes($options);
@@ -76,6 +82,9 @@ function link_to1($name, $internal_uri, $options = array())
   return content_tag('a', $name, $html_options);
 }
 
+/**
+ * @ignore
+ */
 function url_for2($routeName, $params = array(), $absolute = false)
 {
   $params = array_merge(array('sf_route' => $routeName), is_object($params) ? array('sf_subject' => $params) : $params);
@@ -83,6 +92,9 @@ function url_for2($routeName, $params = array(), $absolute = false)
   return url_for1($params, $absolute);
 }
 
+/**
+ * @ignore
+ */
 function url_for1($internal_uri, $absolute = false)
 {
   return sfContext::getInstance()->getController()->genUrl($internal_uri, $absolute);
@@ -163,7 +175,7 @@ function link_to()
 {
   // for BC with 1.1
   $arguments = func_get_args();
-  if (empty($arguments[1]) || '@' == substr($arguments[1], 0, 1) || false !== strpos($arguments[1], '/'))
+  if (empty($arguments[1]) || is_array($arguments[1]) || '@' == substr($arguments[1], 0, 1) || false !== strpos($arguments[1], '/'))
   {
     return call_user_func_array('link_to1', $arguments);
   }
@@ -177,7 +189,7 @@ function link_to()
   }
 }
 
-function url_for_form(sfForm $form, $routePrefix)
+function url_for_form(sfFormObject $form, $routePrefix)
 {
   $format = '%s/%s';
   if ('@' == $routePrefix[0])

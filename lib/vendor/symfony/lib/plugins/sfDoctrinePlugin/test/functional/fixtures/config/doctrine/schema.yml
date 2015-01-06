@@ -16,6 +16,7 @@ Article:
       unique: true
     body: string(255)
     test_column: string(255)
+    views: integer
   relations:
     Author:
       foreignAlias: Articles
@@ -210,3 +211,23 @@ ModelWithNumberInColumn:
     column_1: string(255)
     column2: string(255)
     column__3: string(255)
+
+ResourceType:
+  columns:
+    id:
+      type: enum
+      values: [type1, type2, type3]
+      primary: true
+    name: string(255)
+
+# tests merge from plugin schema
+Setting:
+  actAs:
+    Timestampable:
+      updated:
+        disabled: true
+  columns:
+    name:
+      notnull: true
+    weight:
+      scale: 4

@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: Column.php 1295 2009-11-07 23:22:15Z francois $
+ *  $Id: Column.php 1594 2010-03-15 09:16:23Z francois $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -36,7 +36,7 @@ include_once 'propel/engine/database/model/ColumnDefaultValue.php';
  * @author     Daniel Rall <dlr@finemaltcoding.com> (Torque)
  * @author     Byron Foster <byron_foster@yahoo.com> (Torque)
  * @author     Bernd Goldschmidt <bgoldschmidt@rapidsoft.de>
- * @version    $Revision: 1295 $
+ * @version    $Revision: 1594 $
  * @package    propel.engine.database.model
  */
 class Column extends XMLElement {
@@ -211,7 +211,12 @@ class Column extends XMLElement {
 
       // Add type, size information to associated Domain object
       $this->getDomain()->replaceSqlType($this->getAttribute("sqlType"));
-      $this->getDomain()->replaceSize($this->getAttribute("size", $type == 'VARCHAR' ? 255 : null));
+      if (!$this->getAttribute("size") && $this->getDomain()->getType() == 'VARCHAR' && !$this->getAttribute("sqlType")) {
+        $size = 255;
+      } else {
+        $size = $this->getAttribute("size");
+      }
+      $this->getDomain()->replaceSize($size);
       $this->getDomain()->replaceScale($this->getAttribute("scale"));
 
       $defval = $this->getAttribute("defaultValue", $this->getAttribute("default"));
@@ -250,7 +255,7 @@ class Column extends XMLElement {
    */
   public function getFullyQualifiedName()
   {
-    return ($this->parentTable->getName() . '.' . name);
+    return ($this->parentTable->getName() . '.' . $this->getName());
   }
 
   /**

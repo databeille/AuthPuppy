@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage config
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfApplicationConfiguration.class.php 24042 2009-11-16 18:07:52Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfApplicationConfiguration.class.php 33214 2011-11-19 13:47:24Z fabien $
  */
 abstract class sfApplicationConfiguration extends ProjectConfiguration
 {
@@ -150,9 +150,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
     $this->initializePlugins();
 
     // compress output
-    if (!self::$coreLoaded)
+    if (!self::$coreLoaded && sfConfig::get('sf_compressed'))
     {
-      ob_start(sfConfig::get('sf_compressed') ? 'ob_gzhandler' : '');
+      ob_start('ob_gzhandler');
     }
 
     self::$coreLoaded = true;
@@ -234,6 +234,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
       {
         if (is_readable($file))
         {
+          header("HTTP/1.1 503 Service Temporarily Unavailable");
+          header("Status: 503 Service Temporarily Unavailable");
+
           include $file;
           break;
         }

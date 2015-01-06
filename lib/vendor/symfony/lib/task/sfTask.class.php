@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage task
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfTask.class.php 23437 2009-10-29 16:12:53Z fabien $
+ * @version    SVN: $Id: sfTask.class.php 33151 2011-10-24 08:55:03Z fabien $
  */
 abstract class sfTask
 {
@@ -356,7 +356,8 @@ abstract class sfTask
 
   protected function doRun(sfCommandManager $commandManager, $options)
   {
-    $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', array('command_manager' => $commandManager)), $options);
+    $event = $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', array('command_manager' => $commandManager)), $options);
+    $options = $event->getReturnValue();
 
     $this->process($commandManager, $options);
 
@@ -650,6 +651,14 @@ abstract class sfTask
 
    protected function strlen($string)
    {
-     return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
+     if (!function_exists('mb_strlen')) {
+         return strlen($string);
+     }
+
+     if (false === $encoding = mb_detect_encoding($string)) {
+         return strlen($string);
+     }
+
+     return mb_strlen($string, $encoding);
    }
 }

@@ -18,7 +18,7 @@
  * @subpackage form
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfFormDoctrine.class.php 24537 2009-11-30 05:06:09Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfFormDoctrine.class.php 32740 2011-07-09 09:24:03Z fabien $
  */
 abstract class sfFormDoctrine extends sfFormObject
 {
@@ -84,7 +84,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
       if (false === $i18nObject->exists())
       {
-        unset($i18n['id'], $i18n['lang']);
+        unset($i18n[$this->getI18nModelPrimaryKeyName()], $i18n[$this->getI18nModelI18nField()]);
       }
 
       $this->embedForm($culture, $i18n, $decorator);
@@ -101,10 +101,12 @@ abstract class sfFormDoctrine extends sfFormObject
    * @param  string $relationName  The name of the relation and an optional alias
    * @param  string $formClass     The name of the form class to use
    * @param  array  $formArguments Arguments to pass to the constructor (related object will be shifted onto the front)
+   * @param string  $innerDecorator A HTML decorator for each embedded form
+   * @param string  $decorator      A HTML decorator for the main embedded form
    *
    * @throws InvalidArgumentException If the relationship is not a collection
    */
-  public function embedRelation($relationName, $formClass = null, $formArgs = array())
+  public function embedRelation($relationName, $formClass = null, $formArgs = array(), $innerDecorator = null, $decorator = null)
   {
     if (false !== $pos = stripos($relationName, ' as '))
     {
@@ -122,7 +124,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
     if (Doctrine_Relation::ONE == $relation->getType())
     {
-      $this->embedForm($fieldName, $r->newInstanceArgs(array_merge(array($this->getObject()->$relationName), $formArgs)));
+      $this->embedForm($fieldName, $r->newInstanceArgs(array_merge(array($this->getObject()->$relationName), $formArgs)), $decorator);
     }
     else
     {
@@ -132,11 +134,11 @@ abstract class sfFormDoctrine extends sfFormObject
       {
         $form = $r->newInstanceArgs(array_merge(array($childObject), $formArgs));
 
-        $subForm->embedForm($index, $form);
+        $subForm->embedForm($index, $form, $innerDecorator);
         $subForm->getWidgetSchema()->setLabel($index, (string) $childObject);
       }
 
-      $this->embedForm($fieldName, $subForm);
+      $this->embedForm($fieldName, $subForm, $decorator);
     }
   }
 
@@ -223,21 +225,49 @@ abstract class sfFormDoctrine extends sfFormObject
   }
 
   /**
+   * Returns the primary key name of the i18n model.
+   *
+   * @return string The primary key name of the i18n model
+   */
+  public function getI18nModelPrimaryKeyName()
+  {
+    $primaryKey = $this->getObject()->getTable()->getIdentifier();
+
+    if (is_array($primaryKey))
+    {
+      throw new sfException(sprintf('The model "%s" has composite primary keys and cannot be used with i18n..', $this->getModelName()));
+    }
+
+    return $primaryKey;
+  }
+
+  /**
+   * Returns the i18nField name of the i18n model.
+   *
+   * @return string The i18nField name of the i18n model
+   */
+  public function getI18nModelI18nField()
+  {
+    return $this->getObject()->getTable()->getTemplate('Doctrine_Template_I18n')->getI18n()->getOption('i18nField');
+  }
+
+  /**
    * Updates the default values of the form with the current values of the current object.
    */
   protected function updateDefaultsFromObject()
   {
+    $defaults = $this->getDefaults();
+
     // update defaults for the main object
     if ($this->isNew())
     {
-      $this->setDefaults(array_merge($this->getObject()->toArray(false), $this->getDefaults()));
+      $defaults = $defaults + $this->getObject()->toArray(false);
     }
     else
     {
-      $this->setDefaults(array_merge($this->getDefaults(), $this->getObject()->toArray(false)));
+      $defaults = $this->getObject()->toArray(false) + $defaults;
     }
 
-    $defaults = $this->getDefaults();
     foreach ($this->embeddedForms as $name => $form)
     {
       if ($form instanceof sfFormDoctrine)
@@ -246,6 +276,7 @@ abstract class sfFormDoctrine extends sfFormObject
         $defaults[$name] = $form->getDefaults();
       }
     }
+
     $this->setDefaults($defaults);
   }
 
@@ -309,9 +340,10 @@ abstract class sfFormDoctrine extends sfFormObject
       throw new LogicException(sprintf('You cannot remove the current file for field "%s" as the field is not a file.', $field));
     }
 
-    if (($directory = $this->validatorSchema[$field]->getOption('path')) && is_file($directory.$this->getObject()->$field))
+    $directory = $this->validatorSchema[$field]->getOption('path');
+    if ($directory && is_file($file = $directory.'/'.$this->getObject()->$field))
     {
-      unlink($directory.$this->getObject()->$field);
+      unlink($file);
     }
   }
 
@@ -383,7 +415,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
     if (!$table->hasRelation($alias))
     {
-      throw new InvalidArgumentException(sprintf('The "%s" model has to "%s" relation.', $this->getModelName(), $alias));
+      throw new InvalidArgumentException(sprintf('The "%s" model has no "%s" relation.', $this->getModelName(), $alias));
     }
 
     $relation = $table->getRelation($alias);

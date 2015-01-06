@@ -23,7 +23,7 @@
  * @package    symfony
  * @subpackage form
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfForm.class.php 24278 2009-11-23 15:21:09Z Kris.Wallsmith $
+ * @version    SVN: $Id: sfForm.class.php 33598 2012-11-25 09:57:29Z fabien $
  */
 class sfForm implements ArrayAccess, Iterator, Countable
 {
@@ -222,6 +222,8 @@ class sfForm implements ArrayAccess, Iterator, Countable
       $this->taintedFiles = array();
     }
 
+    $this->checkTaintedValues($this->taintedValues);
+
     try
     {
       $this->doBind(self::deepArrayUnion($this->taintedValues, self::convertFileInformation($this->taintedFiles)));
@@ -334,13 +336,13 @@ class sfForm implements ArrayAccess, Iterator, Countable
   /**
    * Returns the array name under which user data can retrieved.
    *
-   * If the user data is not stored under an array, it returns null.
+   * If the user data is not stored under an array, it returns false.
    *
-   * @return string The name
+   * @return string|boolean The name or false if the name format is not an array format
    */
   public function getName()
   {
-    if ('%s' == $nameFormat = $this->widgetSchema->getNameFormat())
+    if ('[%s]' != substr($nameFormat = $this->widgetSchema->getNameFormat(), -4))
     {
       return false;
     }
@@ -494,7 +496,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
     $form = clone $form;
     unset($form[self::$CSRFFieldName]);
 
-    $this->defaults = array_merge($this->defaults, $form->getDefaults());
+    $this->defaults = $form->getDefaults() + $this->defaults;
 
     foreach ($form->getWidgetSchema()->getPositions() as $field)
     {
@@ -506,8 +508,8 @@ class sfForm implements ArrayAccess, Iterator, Countable
       $this->validatorSchema[$field] = $validator;
     }
 
-    $this->getWidgetSchema()->setLabels(array_merge($this->getWidgetSchema()->getLabels(), $form->getWidgetSchema()->getLabels()));
-    $this->getWidgetSchema()->setHelps(array_merge($this->getWidgetSchema()->getHelps(), $form->getWidgetSchema()->getHelps()));
+    $this->getWidgetSchema()->setLabels($form->getWidgetSchema()->getLabels() + $this->getWidgetSchema()->getLabels());
+    $this->getWidgetSchema()->setHelps($form->getWidgetSchema()->getHelps() + $this->getWidgetSchema()->getHelps());
 
     $this->mergePreValidator($form->getValidatorSchema()->getPreValidator());
     $this->mergePostValidator($form->getValidatorSchema()->getPostValidator());
@@ -582,8 +584,8 @@ class sfForm implements ArrayAccess, Iterator, Countable
   /**
    * Set a validator for the given field name.
    *
-   * @param string      $name      The field name
-   * @param sfValidator $validator The validator
+   * @param string          $name      The field name
+   * @param sfValidatorBase $validator The validator
    *
    * @return sfForm The current form instance
    */
@@ -601,7 +603,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @param  string      $name      The field name
    *
-   * @return sfValidator $validator The validator
+   * @return sfValidatorBase $validator The validator
    */
   public function getValidator($name)
   {
@@ -827,7 +829,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
 
     if ($this->isCSRFProtected())
     {
-      $this->setDefault(self::$CSRFFieldName, $this->getCSRFToken(self::$CSRFSecret));
+      $this->setDefault(self::$CSRFFieldName, $this->getCSRFToken($this->localCSRFSecret ? $this->localCSRFSecret : self::$CSRFSecret));
     }
 
     $this->resetFormFields();
@@ -897,7 +899,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
   {
     if (null === $secret)
     {
-      $secret = self::$CSRFSecret;
+      $secret = $this->localCSRFSecret ? $this->localCSRFSecret : self::$CSRFSecret;
     }
 
     return md5($secret.session_id().get_class($this));
@@ -938,7 +940,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    */
   public function enableLocalCSRFProtection($secret = null)
   {
-    $this->localCSRFSecret = $secret;
+    $this->localCSRFSecret = null === $secret ? true : $secret;
   }
 
   /**
@@ -1143,7 +1145,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
   {
     if (null === $this->formFieldSchema)
     {
-      $values = $this->isBound ? $this->taintedValues : array_merge($this->widgetSchema->getDefaults(), $this->defaults);
+      $values = $this->isBound ? $this->taintedValues : $this->defaults + $this->widgetSchema->getDefaults();
 
       $this->formFieldSchema = new sfFormFieldSchema($this->widgetSchema, null, null, $values, $this->errorSchema);
     }
@@ -1335,5 +1337,25 @@ class sfForm implements ArrayAccess, Iterator, Countable
     }
 
     return $array1;
+  }
+
+  /**
+   * Checks that the $_POST values do not contain something that
+   * looks like a file upload (coming from $_FILE).
+   */
+  protected function checkTaintedValues($values)
+  {
+    foreach ($values as $name => $value)
+    {
+      if (!is_array($value)) {
+        continue;
+      }
+
+      if (isset($value['tmp_name'])) {
+        throw new InvalidArgumentException('Do not try to fake a file upload.');
+      }
+
+      $this->checkTaintedValues($value);
+    }
   }
 }

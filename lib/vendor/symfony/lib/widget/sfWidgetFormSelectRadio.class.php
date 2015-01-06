@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage widget
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfWidgetFormSelectRadio.class.php 23994 2009-11-15 22:55:24Z bschussek $
+ * @version    SVN: $Id: sfWidgetFormSelectRadio.class.php 30762 2010-08-25 12:33:33Z fabien $
  */
 class sfWidgetFormSelectRadio extends sfWidgetFormChoiceBase
 {
@@ -48,6 +48,8 @@ class sfWidgetFormSelectRadio extends sfWidgetFormChoiceBase
   }
 
   /**
+   * Renders the widget.
+   *
    * @param  string $name        The element name
    * @param  string $value       The value selected in this widget
    * @param  array  $attributes  An array of HTML attributes to be merged with the default HTML attributes
@@ -102,7 +104,7 @@ class sfWidgetFormSelectRadio extends sfWidgetFormChoiceBase
 
       $inputs[$id] = array(
         'input' => $this->renderTag('input', array_merge($baseAttributes, $attributes)),
-        'label' => $this->renderContentTag('label', $option, array('for' => $id)),
+        'label' => $this->renderContentTag('label', self::escapeOnce($option), array('for' => $id)),
       );
     }
 

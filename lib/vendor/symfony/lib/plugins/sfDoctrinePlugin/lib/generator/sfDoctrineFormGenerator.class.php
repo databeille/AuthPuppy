@@ -18,7 +18,7 @@
  * @subpackage generator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineFormGenerator.class.php 24294 2009-11-23 21:45:03Z Jonathan.Wage $
+ * @version    SVN: $Id: sfDoctrineFormGenerator.class.php 32892 2011-08-05 07:53:57Z fabien $
  */
 class sfDoctrineFormGenerator extends sfGenerator
 {
@@ -167,10 +167,14 @@ class sfDoctrineFormGenerator extends sfGenerator
             if ($reflection->isSubClassOf($parent))
             {
               $this->pluginModels[$modelName] = $pluginName;
-              $generators = Doctrine_Core::getTable($modelName)->getGenerators();
-              foreach ($generators as $generator)
+              
+              if ($reflection->isInstantiable())
               {
-                $this->pluginModels[$generator->getOption('className')] = $pluginName;
+                $generators = Doctrine_Core::getTable($modelName)->getGenerators();
+                foreach ($generators as $generator)
+                {
+                  $this->pluginModels[$generator->getOption('className')] = $pluginName;
+                }  
               }
             }
           }
@@ -331,8 +335,9 @@ class sfDoctrineFormGenerator extends sfGenerator
   /**
    * Returns a PHP string representing options to pass to a widget for a given column.
    *
-   * @param  sfDoctrineColumn $column
-   * @return string    The options to pass to the widget as a PHP string
+   * @param sfDoctrineColumn $column
+   * 
+   * @return string The options to pass to the widget as a PHP string
    */
   public function getWidgetOptionsForColumn($column)
   {
@@ -342,16 +347,9 @@ class sfDoctrineFormGenerator extends sfGenerator
     {
       $options[] = sprintf('\'model\' => $this->getRelatedModelName(\'%s\'), \'add_empty\' => %s', $column->getRelationKey('alias'), $column->isNotNull() ? 'false' : 'true');
     }
-    else
+    else if ('enum' == $column->getDoctrineType() && is_subclass_of($this->getWidgetClassForColumn($column), 'sfWidgetFormChoiceBase'))
     {
-      switch ($column->getDoctrineType())
-      {
-        case 'enum':
-          $values = $column->getDefinitionKey('values');
-          $values = array_combine($values, $values);
-          $options[] = "'choices' => " . str_replace("\n", '', $this->arrayExport($values));
-          break;
-      }
+      $options[] = '\'choices\' => '.$this->arrayExport(array_combine($column['values'], $column['values']));
     }
 
     return count($options) ? sprintf('array(%s)', implode(', ', $options)) : '';
@@ -411,9 +409,13 @@ class sfDoctrineFormGenerator extends sfGenerator
         $validatorSubclass = 'Pass';
     }
 
-    if ($column->isPrimaryKey() || $column->isForeignKey())
+    if ($column->isForeignKey())
     {
       $validatorSubclass = 'DoctrineChoice';
+    }
+    else if ($column->isPrimaryKey())
+    {
+      $validatorSubclass = 'Choice';
     }
 
     return sprintf('sfValidator%s', $validatorSubclass);
@@ -435,7 +437,7 @@ class sfDoctrineFormGenerator extends sfGenerator
     }
     else if ($column->isPrimaryKey())
     {
-      $options[] = sprintf('\'model\' => $this->getModelName(), \'column\' => \'%s\'', $column->getName());
+      $options[] = sprintf('\'choices\' => array($this->getObject()->get(\'%s\')), \'empty_value\' => $this->getObject()->get(\'%1$s\')', $column->getFieldName());
     }
     else
     {
@@ -456,8 +458,7 @@ class sfDoctrineFormGenerator extends sfGenerator
           }
           break;
         case 'enum':
-          $values = array_combine($column['values'], $column['values']);
-          $options[] = "'choices' => " . str_replace("\n", '', $this->arrayExport($values));
+          $options[] = '\'choices\' => '.$this->arrayExport($column['values']);
           break;
       }
     }
@@ -573,13 +574,15 @@ class sfDoctrineFormGenerator extends sfGenerator
     {
       if ($column->getDefinitionKey('unique'))
       {
-        $uniqueColumns[] = array($column->getName());
+        $uniqueColumns[] = array($column->getFieldName());
       }
     }
 
     $indexes = $this->table->getOption('indexes');
     foreach ($indexes as $name => $index)
     {
+      $index['fields'] = (array) $index['fields'];
+
       if (isset($index['type']) && $index['type'] == 'unique')
       {
         $tmp = $index['fields'];

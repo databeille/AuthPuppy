@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id: UnitOfWork.php 7378 2010-03-15 20:09:45Z jwage $
+ *  $Id: UnitOfWork.php 7684 2010-08-24 16:34:16Z jwage $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 /**
@@ -31,9 +31,9 @@
  * @package     Doctrine
  * @subpackage  Connection
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @since       1.0
- * @version     $Revision: 7378 $
+ * @version     $Revision: 7684 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Roman Borschel <roman@code-factory.org>
  */
@@ -94,6 +94,8 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                         break;
                 }
 
+                $aliasesUnlinkInDb = array();
+
                 if ($isValid) {
                     // NOTE: what about referential integrity issues?
                     foreach ($record->getPendingDeletes() as $pendingDelete) {
@@ -103,8 +105,10 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
                     foreach ($record->getPendingUnlinks() as $alias => $ids) {
                         if ($ids === false) {
                             $record->unlinkInDb($alias, array());
+                            $aliasesUnlinkInDb[] = $alias;
                         } else if ($ids) {
                             $record->unlinkInDb($alias, array_keys($ids));
+                            $aliasesUnlinkInDb[] = $alias;
                         }
                     }
                     $record->resetPendingUnlinks();
@@ -128,7 +132,8 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
 
                             // check that the related object is not an instance of Doctrine_Null
                             if ($obj && ! ($obj instanceof Doctrine_Null)) {
-                                $obj->save($conn);
+                                $processDiff = !in_array($alias, $aliasesUnlinkInDb);
+                                $obj->save($conn, $processDiff);
                             }
                         }
                     }
@@ -595,7 +600,14 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
 
                 $table = $record->getTable();
                 $identifier = (array) $table->getIdentifier();
-                $data = $record->getPrepared();                
+                $data = $record->getPrepared();       
+
+                foreach ($data as $key  => $value) {
+                    if ($value instanceof Doctrine_Expression) {
+                        $data[$key] = $value->getSql();
+                    }
+                }
+
                 $result = $this->conn->replace($table, $data, $identifier);
 
                 $record->invokeSaveHooks('post', 'insert', $insertEvent);
@@ -927,7 +939,7 @@ class Doctrine_Connection_UnitOfWork extends Doctrine_Connection_Module
             $id = false;
             if ($record->$identifier == null) { 
                 if (($driver = strtolower($this->conn->getDriverName())) == 'pgsql') {
-                    $seq = $table->getTableName() . '_' . $identifier;
+                    $seq = $table->getTableName() . '_' . $table->getColumnName($identifier);
                 } elseif ($driver == 'oracle' || $driver == 'mssql') {
                     $seq = $table->getTableName();
                 }

@@ -16,7 +16,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the LGPL. For more information, see
- * <http://www.phpdoctrine.org>.
+ * <http://www.doctrine-project.org>.
  */
 
 /**
@@ -26,7 +26,7 @@
  * @package     Doctrine
  * @subpackage  Migration
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link        www.phpdoctrine.org
+ * @link        www.doctrine-project.org
  * @since       1.0
  * @version     $Revision: 1080 $
  * @author      Jonathan H. Wage <jonwage@gmail.com>
@@ -112,7 +112,10 @@ class Doctrine_Migration_Diff
         $this->_cleanup();
 
         $from = $this->_generateModels(self::$_fromPrefix, $this->_from);
-        $to = $this->_generateModels(self::$_toPrefix, $this->_to);
+        $to = $this->_generateModels(
+            Doctrine_Manager::getInstance()->getAttribute(Doctrine_Core::ATTR_MODEL_CLASS_PREFIX) . self::$_toPrefix,
+            $this->_to
+        );
 
         return $this->_diff($from, $to);
     }
@@ -137,10 +140,16 @@ class Doctrine_Migration_Diff
      */
     protected function _initializeModels($path)
     {
-        $orig = Doctrine_Core::getModelsDirectory();
-        Doctrine_Core::setModelsDirectory($path);
-        $models = Doctrine_Core::initializeModels(Doctrine_Core::loadModels($path));
-        Doctrine_Core::setModelsDirectory($orig);
+        $manager = Doctrine_Manager::getInstance();
+        $modelLoading = $manager->getAttribute(Doctrine_Core::ATTR_MODEL_LOADING);
+        if ($modelLoading === Doctrine_Core::MODEL_LOADING_PEAR) {
+            $orig = Doctrine_Core::getModelsDirectory();
+            Doctrine_Core::setModelsDirectory($path);
+            $models = Doctrine_Core::initializeModels(Doctrine_Core::loadModels($path));
+            Doctrine_Core::setModelsDirectory($orig);
+        } else {
+            $models = Doctrine_Core::initializeModels(Doctrine_Core::loadModels($path));
+        }
         return $models;
     }
 
