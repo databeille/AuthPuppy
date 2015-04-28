@@ -51,7 +51,8 @@ class apPluginManagerListForm extends BaseForm
  
     foreach ($this->plugins->getPlugins() as $pluginName => $plugin) {
       $this->widgetSchema[$pluginName] = new sfWidgetFormInputCheckbox(); 
-      $this->validatorSchema[$pluginName] = new sfValidatorPass();
+      $this->validatorSchema[$pluginName] = new sfValidatorPass(array('required' => false));
+
       $this->setDefault($pluginName, $plugin->isEnabled());
       
     }
